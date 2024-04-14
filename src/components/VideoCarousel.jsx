@@ -3,6 +3,9 @@ import {hightlightsSlides} from "../constants/index.js";
 import gsap from 'gsap';
 import {pauseImg, playImg, replayImg} from "../utils/index.js";
 import {useGSAP} from "@gsap/react";
+import { ScrollTrigger } from "gsap/all";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const VideoCarousel = () => {
     const videoRef = useRef([]);
@@ -29,7 +32,7 @@ const VideoCarousel = () => {
             ease: "power2.inOut"
         })
 
-        // animate the viideo to play when it is in the view
+        // animate the video to play when it is in the view
         gsap.to("#video", {
             // once the video is in view to we want to trigger it
             scrollTrigger: {
@@ -174,7 +177,7 @@ const VideoCarousel = () => {
                                         }))
                                     }}
                                     onLoadedMetadata={(e) => handleLoadedMetaData(e, index)}
-                                    onEnded={() => index !== 3 ? handleProcess("end", index) : handleProcess("last", index)}
+                                    onEnded={() => index !== 3 ? handleProcess("end", index) : handleProcess("last")}
                                 >
                                     <source src={list.video} type="video/mp4"/>
                                 </video>
