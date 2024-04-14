@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import gsap from 'gsap';
 import {useGSAP} from "@gsap/react";
 import ModelView from "./ModelView.jsx";
@@ -7,6 +7,7 @@ import * as THREE from "three"
 import {Canvas} from "@react-three/fiber";
 import {View} from "@react-three/drei";
 import {models, sizes} from "../constants/index.js";
+import {animateWithGsapTimeline} from "../utils/animations.js";
 
 const Model = () => {
     const [size, setSize] = useState("small");
@@ -26,7 +27,29 @@ const Model = () => {
 
     //rotation
     const [smallRotation, setSmallRotation] = useState(0);
-    const [largeRotation, setLargeRotation] = useState(0)
+    const [largeRotation, setLargeRotation] = useState(0);
+
+    const timeline = gsap.timeline();
+
+    useEffect(() => {
+        if (size === "large") {
+            // get the current value of the small rotation then rotate the small model by the value stored in that rotation
+            // animate the small model view to the left
+            // animate large model view to the center
+            animateWithGsapTimeline(timeline, small, smallRotation, "#view1", "#view2", {
+                transform: "translateX(-100%)",
+                duration: 2
+            });
+        }
+
+        if (size === "small") {
+            // same idea but just in reverse
+            animateWithGsapTimeline(timeline, large, largeRotation, "#view2", "#view1", {
+                transform: "translateX(0)",
+                duration: 2
+            });
+        }
+    }, [size]);
 
     useGSAP(() => {
         gsap.to("#heading", {
@@ -48,7 +71,7 @@ const Model = () => {
                         groupRef={small}
                         gsapType="view1"
                         controlRef={cameraControlSmall}
-                        setRotationState={{setSmallRotation}}
+                        setRotationState={setSmallRotation}
                         item={model}
                         size={size}
                     />
@@ -57,7 +80,7 @@ const Model = () => {
                         groupRef={large}
                         gsapType="view2"
                         controlRef={cameraControlLarge}
-                        setRotationState={{setLargeRotation}}
+                        setRotationState={setLargeRotation}
                         item={model}
                         size={size}
                     />
